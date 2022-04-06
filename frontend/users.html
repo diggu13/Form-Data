@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300&display=swap');
+
+        *{
+            box-sizing: border-box;
+        }
+        body{
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans', sans-serif;
+            background-image:linear-gradient( 94.3deg,  rgba(26,33,64,1) 10.9%, rgba(81,84,115,1) 87.1% );
+            color: white;
+        }
+      .data-box{
+          display: flex;
+          flex-direction: row;
+          justify-content:center;
+          gap: 5%;
+          align-items: center;
+          height: 100vh;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="data-box">
+        <div class="image">
+            <h2>Profile </h2>
+           </div>
+       <div class="first_name">
+        <h2>First Name</h2>
+       </div>
+       <div class="last_name">
+           <h2>Last Name</h2>
+       </div>
+       <div class="age">
+        <h2>Age</h2>
+       </div>
+       <div class="email">
+        <h2>Email</h2>
+       </div>
+    </div>
+
+    <script>
+        const dataBox = document.querySelector('.data-box'),
+              profile_img = document.querySelector('.image'),
+              first_name = document.querySelector('.first_name'),
+              last_name = document.querySelector('.last_name'),
+              age = document.querySelector('.age'),
+              email = document.querySelector('.email');
+        
+        fetch(`http://localhost:3000/`)
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                addUser(data)
+            })
+
+
+        function addUser(item){
+            item.forEach((element)=>{
+                profile_img.innerHTML += `
+                    <img src="" />
+                `
+                first_name.innerHTML += `
+                    <h3>${element.field.first_name}</h3>                
+                `;
+                last_name.innerHTML += `
+                    <h3>${element.field.last_name}</h3>
+                `;
+                age.innerHTML +=`
+                    <h3>${element.field.Age}</h3>
+                `;
+                email.innerHTML += `
+                    <h3>${element.field.email}</h3>
+                `
+            })   
+        }
+    </script>
+</body>
+</html>
