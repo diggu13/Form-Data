@@ -10,35 +10,38 @@ const server = http.createServer(function (req, res) {
     res.setHeader('Access-Control-Allow-Headers', '*');
     res.setHeader('Content-Type','multipart/form-data');
     if(req.method === "POST"){
-        console.log("hi");
         const form = formidable({ multiples: true });
-  
-        form.parse(req, (err, fields, files) => {  
-          console.log(fields);
-          console.log(files);
-        if (err) {
+        form.parse(req, (err, fields, files) => { 
+          if (err) {
           res.writeHead(err.httpCode || 400, { 'Content-Type': 'text/plain' });
           res.end(String(err));
           return;
         }
-        MongoClient.connect(url,function(err,db){
+        MongoClient.connect(url,function(err,db){  
           if(err) throw err;
-          var database = db.db('sampledata');
+          var dbo = db.db('sampledata');
           var data = {
             image : files,
-            field :fields
+            field : fields
           }
-          if(data.image){
-            return database.collection('data').insertOne(data,
-              function(err,result){
-                if(err) throw err;
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                console.log(result)
+          var email = data.field.email
+            dbo.collection('data').find({"field.email" : email}).toArray((err,result)=>{
+              if(result[0]){
+                res.writeHead(401)
+                const message = "exists"
+                return res.end(JSON.stringify({'message': message }))
               }
-              )
-          }
-        
-        res.end(JSON.stringify({ fields, files }, null, 2));
+              else{
+                return dbo.collection('data').insertOne(data,
+                  function(err,result){
+                    if(err) throw err;
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    var message = 'User data collected'
+                    res.end(JSON.stringify({ 'message':message }));
+                  }
+                )
+              }           
+            })     
         })      
       });
         }
@@ -49,13 +52,13 @@ const server = http.createServer(function (req, res) {
             var dbo = db.db('sampledata');
             if(dbo){
               return dbo.collection('data').find({}).toArray(function(err,result){
-                if(err) throw err;   
+                if(err) throw err;  
                 res.writeHead(200,{'Content-Type':'application/json'})         
-                res.end(JSON.stringify(result))
+                res.end(JSON.stringify(result)) 
               }) 
-            }      
-          })    
-        }
+        }    
+      })    
+    }
 });
 
 server.listen(3000, (err) => {

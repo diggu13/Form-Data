@@ -24,7 +24,6 @@
           justify-content:center;
           gap: 5%;
           align-items: center;
-          height: 100vh;
         }
         
     </style>
@@ -59,11 +58,8 @@
         fetch(`http://localhost:3000/`)
             .then(res => res.json())
             .then(data => {
-                console.log(data)
                 addUser(data)
             })
-
-
         function addUser(item){
             item.forEach((element)=>{
                 profile_img.innerHTML += `
