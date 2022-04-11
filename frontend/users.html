@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <title>Document</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300&display=swap');
@@ -15,70 +16,171 @@
             margin: 0;
             padding: 0;
             font-family: 'Noto Sans', sans-serif;
-            background-image:linear-gradient( 94.3deg,  rgba(26,33,64,1) 10.9%, rgba(81,84,115,1) 87.1% );
+            background-color: rgba(0, 0, 0, 0.87);
             color: white;
         }
-      .data-box{
-          display: flex;
-          flex-direction: row;
-          justify-content:center;
-          gap: 5%;
-          align-items: center;
-        }
-        
+        .table td, .table th {
+          vertical-align:super;
+}
+      .profile-img{
+        width: 50px;
+        height: 50px;
+        border-radius: 20px;
+        cursor: pointer;
+      }
+     
+       .tdd{
+        cursor: pointer;
+      }
+      .container{
+        width: 600px;
+        height: 100%;
+        background-color: rgba(49, 49, 53, 0.279);
+        display: flex;
+        gap: 10px;
+        padding: 5%;
+        align-items: center;
+        justify-content: center;
+        /* border-radius: 10px; */
+
+      }
+      .container-img{
+        width: 150px;
+        height: 150px;
+        border-radius: 5%;
+      }
+      
+
+
+
+      .modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 200px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.674); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  margin: auto;
+  width: 600px;
+  background-color: rgba(37, 35, 35, 0.53);
+}
+
     </style>
 </head>
 <body>
-    <div class="data-box">
-        <div class="image">
-            <h2>Profile </h2>
-           </div>
-       <div class="first_name">
-        <h2>First Name</h2>
-       </div>
-       <div class="last_name">
-           <h2>Last Name</h2>
-       </div>
-       <div class="age">
-        <h2>Age</h2>
-       </div>
-       <div class="email">
-        <h2>Email</h2>
-       </div>
-    </div>
+    <table class="table table-dark">
+        <thead>
+          <tr>
+            <th scope="col">Profile</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Age</th>
+            <th scope="col">Email</th>
+          </tr>
+        </thead>
+        <tbody id="tr">
+          
+        </tbody>
+      </table>
+      <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content continer ">
+          <div class="container containerTwo">
+          </div>
+        </div>
+      
+      </div>
+    <script>   
+    const tableRow = document.getElementById('tr')
+    const image = document.querySelector('.profile-img')
+    const container = document.querySelector('.container')
 
-    <script>
-        const dataBox = document.querySelector('.data-box'),
-              profile_img = document.querySelector('.image'),
-              first_name = document.querySelector('.first_name'),
-              last_name = document.querySelector('.last_name'),
-              age = document.querySelector('.age'),
-              email = document.querySelector('.email');
-        
         fetch(`http://localhost:3000/`)
             .then(res => res.json())
             .then(data => {
                 addUser(data)
-            })
+        })
+            
         function addUser(item){
-            item.forEach((element)=>{
-                profile_img.innerHTML += `
-                    <img src="" />
+            item.map((element)=>{
+              tableRow.innerHTML += `
+              <tr>
+                <th class= "tdd"><img class="profile-img" src=".${element.image}" /></th>
+                <td class="tdd">${element.field.first_name}</td>
+                <td class="tdd">${element.field.last_name}</td>
+                <td class="tdd">${element.field.Age}</td>
+                <td class="tdd">${element.field.email}</td>
+              </tr>  
                 `
-                first_name.innerHTML += `
-                    <h3>${element.field.first_name}</h3>                
-                `;
-                last_name.innerHTML += `
-                    <h3>${element.field.last_name}</h3>
-                `;
-                age.innerHTML +=`
-                    <h3>${element.field.Age}</h3>
-                `;
-                email.innerHTML += `
-                    <h3>${element.field.email}</h3>
-                `
-            })   
+              })
         }
+
+        // document.addEventListener('click',function(e){
+        //   if(e.target.classList.contains('tdd')){
+        //     container.classList.remove('containerTwo')
+        //    container.innerHTML = `
+        //     <img class="container-img" src ="${e.target.parentElement.childNodes[0].nextElementSibling.childNodes[0].attributes[1].textContent}" /> 
+        //     <div>      
+        //       <h4>Name : ${e.target.parentElement.childNodes[3].childNodes[0].textContent}</h3>   
+        //       <h4> Last Name: ${e.target.parentElement.childNodes[5].childNodes[0].textContent}</h4>
+        //       <h4>Age : ${e.target.parentElement.childNodes[7].childNodes[0].textContent}</h4>
+        //       <h4>Email : ${e.target.parentElement.childNodes[9].childNodes[0].textContent}</h4>
+        //     </div>
+        //    `
+        //   }else if(e.target.classList.contains('profile-img')){
+        //     container.innerHTML = `
+        //     <img class="container-img" src ="${e.target.parentElement.parentElement.childNodes[0].nextElementSibling.childNodes[0].attributes[1].textContent}" /> 
+        //     <h1></h1>           
+        //    `
+            
+        //   }else{
+        //     console.log("wrong clicked")
+        //   }
+        // })
+
+
+
+      var modal = document.getElementById("myModal");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+document.onclick = function(e) {
+  console.log(e.target)
+  if(e.target.classList.contains('tdd')){
+            modal.style.display = "block";
+           container.innerHTML = `
+            <img class="container-img" src ="${e.target.parentElement.childNodes[0].nextElementSibling.childNodes[0].attributes[1].textContent}" /> 
+            <div>      
+              <h4>Name : ${e.target.parentElement.childNodes[3].childNodes[0].textContent}</h3>   
+              <h4> Last Name: ${e.target.parentElement.childNodes[5].childNodes[0].textContent}</h4>
+              <h4>Age : ${e.target.parentElement.childNodes[7].childNodes[0].textContent}</h4>
+              <h4>Email : ${e.target.parentElement.childNodes[9].childNodes[0].textContent}</h4>
+            </div>
+           `}else{
+            console.log("wrong clicked")
+          }
+}
+
+
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+      
     </script>
 </body>
 </html>

@@ -92,7 +92,6 @@ h2 {
 .form-control.error small {
   visibility: visible;
 }
-
 .form button {
   cursor: pointer;
   background-color: #3498db;
@@ -104,6 +103,17 @@ h2 {
   padding: 10px;
   margin-top: 20px;
   width: 100%;
+}
+.email-elementtwo{
+  display: none;
+}
+.email-element{
+  color: red;
+  margin-bottom: 0;
+}
+.user-data-collected{
+  color: green;
+  text-align: center;
 }
     </style>
 </head>
@@ -130,10 +140,10 @@ h2 {
                 <input type="text" id="lname" placeholder="Enter last name" />
                 <small>Error message</small>
             </div>
-            <div class="form-control">
+            <div class="form-control form-controleemail">
               <label for="email">Email</label>
               <input type="text" id="email" placeholder="Enter email" />
-              <small>Error message</small>
+              <p class="email-element email-elementtwo"></p>
             </div>
             <div class="form-control">
                 <label for="age">Age</label>
@@ -141,9 +151,10 @@ h2 {
                 <small>Error message</small>
               </div>
               <div class="form-control">
-                <input accept=".jpeg,.jgg,.png" type="file" id="file"/>
+                <input type="file" id="file"/>
               </div>
             <button type="submit">Submit</button>
+            <p class="user-data-collected"></p>
           </form>
         </div>
     
@@ -154,7 +165,10 @@ const form = document.getElementById('form');
 const fname = document.getElementById('fname');
 const email = document.getElementById('email');
 const lname = document.getElementById('lname');
-    
+const emailRender = document.querySelector('.email-element');
+const emailtwo = document.querySelector('.form-controleemail')
+const userDataCollected = document.querySelector('.user-data-collected')
+
 // Show input error message
 function showError(input, message) {
   const formControl = input.parentElement;
@@ -242,7 +256,16 @@ form.addEventListener('submit', async function(e) {
             fetch(req)
             .then((res)=> res.json())
             .then((data)=>{
-                console.log(data)
+                if(data.message === "Email already exists"){
+                  // emailtwo.classList.remove('success')
+                  emailtwo.classList.add('error')
+                  emailRender.innerHTML=data.message
+                  emailRender.classList.remove('email-elementtwo')
+                }else if(data.message === "User data collected"){
+                  emailRender.classList.add('email-elementtwo')
+                  userDataCollected.innerHTML=data.message;
+                }
+               
             })
             .catch(console.warn)
 });

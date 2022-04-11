@@ -1,6 +1,8 @@
 const http = require('http');
 const MongoClient = require('mongodb').MongoClient
+const fs = require('fs')
 var formidable = require('formidable');
+const { fstat } = require('fs');
 var url = "mongodb+srv://projecttwo:projecttwo@cluster0.qt7ts.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 
 const server = http.createServer(function (req, res) {
@@ -28,10 +30,22 @@ const server = http.createServer(function (req, res) {
             dbo.collection('data').find({"field.email" : email}).toArray((err,result)=>{
               if(result[0]){
                 res.writeHead(401)
-                const message = "exists"
+                const message = "Email already exists"
                 return res.end(JSON.stringify({'message': message }))
               }
               else{
+                let oldpath = data.image.file.filepath;
+                let newPath = `./uploads/${data.image.file.originalFilename}`
+                data.image = newPath;
+                console.log(data.image)
+                fs.rename(oldpath, newPath, (err)=>{
+                  if(err){
+                    console.log(err)
+                    console.log("some error")
+                  }else{
+                    console.log('uploaded')
+                  }
+                })
                 return dbo.collection('data').insertOne(data,
                   function(err,result){
                     if(err) throw err;
